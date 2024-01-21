@@ -34,5 +34,5 @@ func main() {
   bookRoute.PUT("/:id", controller.UpdateBook)
   bookRoute.DELETE("/:id", controller.DeleteBook)
 
-  e.Logger.Fatal(e.Start(":8080"))
+  e.Logger.Fatal(e.Start(":3000"))
 }
