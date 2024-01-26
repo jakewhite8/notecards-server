@@ -78,6 +78,7 @@ func UpdateBook(c echo.Context) error {
 }
 
 func GetBook(c echo.Context) error {
+  Query()
   id := c.Param("id")
   db := config.DB()
 
