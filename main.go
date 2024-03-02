@@ -2,8 +2,8 @@ package main
 
 import (
   "net/http"
-  "simple-res-api/config"
-  "simple-res-api/controller"
+  "notecards-api/config"
+  "notecards-api/controller"
 
   "github.com/labstack/echo/v4"
 )

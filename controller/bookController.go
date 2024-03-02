@@ -2,8 +2,8 @@ package controller
 
 import (
   "net/http"
-  "simple-res-api/config"
-  "simple-res-api/model"
+  "notecards-api/config"
+  "notecards-api/model"
 
   "github.com/labstack/echo/v4"
 )
@@ -78,7 +78,7 @@ func UpdateBook(c echo.Context) error {
 }
 
 func GetBook(c echo.Context) error {
-  Query()
+  // Query()
   id := c.Param("id")
   db := config.DB()
 
