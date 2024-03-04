@@ -3,9 +3,10 @@ import (
   "errors"
   "time"
   "github.com/dgrijalva/jwt-go"
+  "os"
 )
-// Declare secret key
-var jwtKey = []byte("secretkey")
+// Retrieve secret key
+var jwtKey = []byte(os.Getenv("JWT_SECRET"))
 // Used to create JWT payload (data section)
 // StandardClaims only contains the JWT's expiration date at the moment
 type JWTClaim struct {
