@@ -1,5 +1,6 @@
 package controller
 import (
+  "notecards-api/auth"
   "notecards-api/database"
   "notecards-api/model"
   "net/http"
@@ -26,6 +27,12 @@ func RegisterUser(context *gin.Context) {
     context.Abort()
     return
   }
+  tokenString, err:= auth.GenerateJWT(user.Email, user.Username)
+  if err != nil {
+    context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+    context.Abort()
+    return
+  }
   // Send client success response
-  context.JSON(http.StatusCreated, gin.H{"userId": user.ID, "email": user.Email, "username": user.Username})
+  context.JSON(http.StatusCreated, gin.H{"id": user.ID, "email": user.Email, "username": user.Username, "name": user.Name, "token": tokenString})
 }
