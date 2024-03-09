@@ -20,7 +20,7 @@ func GenerateToken(context *gin.Context) {
     return
   }
   // Check if email exists and password is correct
-  record := database.Instance.Where("email = ?", request.Email).First(&user)
+  record := database.Instance.Where("LOWER(email) = LOWER(?)", request.Email).First(&user)
   if record.Error != nil {
     context.JSON(http.StatusInternalServerError, gin.H{"error": record.Error.Error()})
     context.Abort()
@@ -38,5 +38,5 @@ func GenerateToken(context *gin.Context) {
     context.Abort()
     return
   }
-  context.JSON(http.StatusOK, gin.H{"token": tokenString})
+  context.JSON(http.StatusOK, gin.H{"token": tokenString, "name": user.Name, "username": user.Username, "id": user.ID, "email": user.Email})
 }
