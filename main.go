@@ -14,6 +14,7 @@ func main() {
 }
 func initRouter() *gin.Engine {
   router := gin.Default()
+  router.GET("/", controller.PublicResponse)
   api := router.Group("/api")
   {
     api.POST("/token", controller.GenerateToken)
