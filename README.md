@@ -54,7 +54,7 @@ This is the server for the Notecards application. The Notecards server accepts r
 
 ### Built With
 
-The server is built with the Go web framework, Gin. It uses GORM to interact with the Postgres database hosted on a Amazon RDS.
+The server is built with the Go web framework, Gin. It uses GORM to interact with the Postgres database hosted on an Amazon RDS.
 
 * [![Go][Go]][Go-url]
 * [![Gin][Gin]][Gin-url]
@@ -114,4 +114,3 @@ Resources I found helpful and would like to give credit to
 [Go-url]: https://go.dev/
 [Gin]: https://img.shields.io/badge/gin-green?style=for-the-badge&logo=gin
 [Gin-url]: https://github.com/gin-gonic/gin
-[Expo-url]: https://expo.dev/
