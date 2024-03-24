@@ -1,15 +1,7 @@
 package model
 import (
-  "gorm.io/gorm"
   "golang.org/x/crypto/bcrypt"
 )
-type User struct {
-  gorm.Model
-  Name     string `json:"name"`
-  Username string `json:"username" gorm:"unique"`
-  Email    string `json:"email" gorm:"unique"`
-  Password string `json:"password"`
-}
 
 func (user *User) HashPassword(password string) error {
   bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
