@@ -23,6 +23,8 @@ func initRouter() *gin.Engine {
     {
       // Secured area PoC
       secured.GET("/ping", controller.Ping)
+      secured.POST("/create_notecard_set", controller.CreateNotecardSet)
+
     }
   }
   return router
