@@ -4,5 +4,6 @@ import (
   "github.com/gin-gonic/gin"
 )
 func Ping(context *gin.Context) {
-  context.JSON(http.StatusOK, gin.H{"message": "pong"})
+  userID := context.MustGet("user_id").(uint)
+  context.JSON(http.StatusOK, gin.H{"user_id": userID})
 }

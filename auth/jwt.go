@@ -3,6 +3,7 @@ import (
   "errors"
   "time"
   "github.com/dgrijalva/jwt-go"
+  "github.com/gin-gonic/gin"
   "os"
 )
 // Retrieve secret key
@@ -12,13 +13,15 @@ var jwtKey = []byte(os.Getenv("JWT_SECRET"))
 type JWTClaim struct {
   Username string `json:"username"`
   Email    string `json:"email"`
+  ID       uint   `json:"id"`
   jwt.StandardClaims
 }
-func GenerateJWT(email string, username string) (tokenString string, err error) {
+func GenerateJWT(email string, username string, id uint) (tokenString string, err error) {
   expirationTime := time.Now().Add(1 * time.Hour)
   claims:= &JWTClaim{
     Email: email,
     Username: username,
+    ID: id,
     StandardClaims: jwt.StandardClaims{
       ExpiresAt: expirationTime.Unix(),
     },
@@ -27,7 +30,7 @@ func GenerateJWT(email string, username string) (tokenString string, err error) 
   tokenString, err = token.SignedString(jwtKey)
   return
 }
-func ValidateToken(signedToken string) (err error) {
+func ValidateToken(signedToken string, context *gin.Context) (err error) {
   token, err := jwt.ParseWithClaims(
     signedToken,
     &JWTClaim{},
@@ -47,5 +50,8 @@ func ValidateToken(signedToken string) (err error) {
     err = errors.New("token expired")
     return
   }
+  context.Set("user_id", claims.ID)
+  context.Set("user_email", claims.Email)
+  context.Set("username", claims.Username)
   return
 }
