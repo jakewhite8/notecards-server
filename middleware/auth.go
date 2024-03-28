@@ -1,6 +1,6 @@
 package middleware
 import (
-  "notecards-api/auth"
+  "github.com/jakewhite8/notecards-server/auth"
   "github.com/gin-gonic/gin"
 )
 func Auth() gin.HandlerFunc{

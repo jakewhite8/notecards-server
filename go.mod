@@ -1,4 +1,4 @@
-module notecards-api
+module github.com/jakewhite8/notecards-server
 
 go 1.20
 

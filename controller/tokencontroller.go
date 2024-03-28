@@ -1,8 +1,8 @@
 package controller
 import (
-  "notecards-api/auth"
-  "notecards-api/database"
-  "notecards-api/model"
+  "github.com/jakewhite8/notecards-server/auth"
+  "github.com/jakewhite8/notecards-server/database"
+  "github.com/jakewhite8/notecards-server/model"
   "net/http"
   "github.com/gin-gonic/gin"
 )

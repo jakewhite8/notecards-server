@@ -1,7 +1,7 @@
 package database
 import (
   "fmt"
-  "notecards-api/model"
+  "github.com/jakewhite8/notecards-server/model"
   "log"
   "gorm.io/driver/postgres"
   "gorm.io/gorm"

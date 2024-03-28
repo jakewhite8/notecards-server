@@ -1,8 +1,8 @@
 package main
 import (
-  "notecards-api/controller"
-  "notecards-api/database"
-  "notecards-api/middleware"
+  "github.com/jakewhite8/notecards-server/controller"
+  "github.com/jakewhite8/notecards-server/database"
+  "github.com/jakewhite8/notecards-server/middleware"
   "github.com/gin-gonic/gin"
 )
 func main() {
