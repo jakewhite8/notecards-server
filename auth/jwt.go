@@ -50,6 +50,7 @@ func ValidateToken(signedToken string, context *gin.Context) (err error) {
     err = errors.New("token expired")
     return
   }
+  // Write Current User information to the context object
   context.Set("user_id", claims.ID)
   context.Set("user_email", claims.Email)
   context.Set("username", claims.Username)

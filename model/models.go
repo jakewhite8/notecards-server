@@ -3,7 +3,7 @@ import (
   "gorm.io/gorm"
 )
 
-//  Table that stores User informatino
+//  Table that stores User information
 type User struct {
   gorm.Model
   Name     string `json:"name"`

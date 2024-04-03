@@ -15,7 +15,7 @@ func Connect() () {
   dbName := "go_rest_api"
   port := 5432
 
-  dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbName, port)
+  dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", host, user, password, dbName, port)
 
   Instance, dbError = gorm.Open(postgres.Open(dsn), &gorm.Config{})
   if dbError != nil {
