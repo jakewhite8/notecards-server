@@ -30,7 +30,7 @@ type UserNotecards struct {
 // Table that stores the individual notecards for a set of Notecards
 type Notecards struct {
   gorm.Model
-  NotecardSetId     uint    `json:"notecard_set_id"`
+  NotecardSetID     uint    `json:"notecard_set_id"`
   Front             string  `json:"front"`
   Back              string  `json:"back"`
 }
