@@ -5,9 +5,10 @@ import (
   "net/http"
   "github.com/gin-gonic/gin"
   "sync"
+  "fmt"
 )
 
-func insertNotecards(wg *sync.WaitGroup, rawNotecards [][]string, notecardSetID uint, context *gin.Context) {
+func insertNotecards(wg *sync.WaitGroup, rawNotecards [][]string, notecardSetID uint, context *gin.Context, errorChan chan string) {
   defer wg.Done()
   var notecards []model.Notecards
   for i := range rawNotecards {
@@ -21,13 +22,11 @@ func insertNotecards(wg *sync.WaitGroup, rawNotecards [][]string, notecardSetID 
 
   notecardsRecord := database.Instance.Create(notecards)
   if notecardsRecord.Error != nil {
-    context.JSON(http.StatusInternalServerError, gin.H{"error": notecardsRecord.Error.Error()})
-    context.Abort()
-    return
+    errorChan <- notecardsRecord.Error.Error()
   }
 }
 
-func insertUserNotecards(wg *sync.WaitGroup, notecardSetID uint, userID uint, context *gin.Context) {
+func insertUserNotecards(wg *sync.WaitGroup, notecardSetID uint, userID uint, context *gin.Context, errorChan chan string) {
   defer wg.Done()
   userNotecards := model.UserNotecards{
     UserID: userID,
@@ -35,9 +34,7 @@ func insertUserNotecards(wg *sync.WaitGroup, notecardSetID uint, userID uint, co
   }
   userNotecardsRecord := database.Instance.Create(&userNotecards)
   if userNotecardsRecord.Error != nil {
-    context.JSON(http.StatusInternalServerError, gin.H{"error": userNotecardsRecord.Error.Error()})
-    context.Abort()
-    return
+    errorChan <- userNotecardsRecord.Error.Error()
   }
 }
 
@@ -71,12 +68,22 @@ func CreateNotecardSet(context *gin.Context) {
 
   wg := new(sync.WaitGroup)
   wg.Add(2)
+  errorChan := make(chan string)
   // Goroutine
-  go insertNotecards(wg, newNotecardSet.Notecards, notecardSet.ID, context)
-  go insertUserNotecards(wg, notecardSet.ID, userID, context)
+  go insertNotecards(wg, newNotecardSet.Notecards, notecardSet.ID, context, errorChan)
+  go insertUserNotecards(wg, notecardSet.ID, userID, context, errorChan)
 
   wg.Wait()
+  close(errorChan)
 
-  // Send client success response
-  context.JSON(http.StatusCreated, gin.H{"success": true})
+  success := true
+  for err := range errorChan {
+    success = false
+    fmt.Println("Error in CreateNotecardSet:", err)
+  }
+  if success {
+    context.JSON(http.StatusCreated, gin.H{"success": true})
+  } else {
+    context.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating notecards"})
+  }
 }
