@@ -38,7 +38,7 @@ func insertUserNotecards(wg *sync.WaitGroup, notecardSetID uint, userID uint, co
   }
 }
 
-
+// Accepts a Title and an array of Notecards (with a front and back) to create a Set of Notecards
 func CreateNotecardSet(context *gin.Context) {
   userID := context.MustGet("user_id").(uint)
 
