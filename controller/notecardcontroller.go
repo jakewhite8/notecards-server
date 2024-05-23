@@ -102,3 +102,16 @@ func GetNotecardSets(context *gin.Context) {
   }
   context.JSON(http.StatusOK, gin.H{"notecardSets": notecardSets}) 
 }
+
+// Get all the Notecards that belong to the requested Notecard Set
+func GetNotecards(context *gin.Context) {
+  notecardSetID := context.Param("id")
+  var notecards []model.Notecards
+  getNotecards := database.Instance.Where("notecard_set_id = ?", notecardSetID).Find(&notecards)
+  if getNotecards.Error != nil {
+    context.JSON(http.StatusInternalServerError, gin.H{"error": getNotecards.Error.Error()})
+    context.Abort()
+    return
+  }
+  context.JSON(http.StatusOK, gin.H{"notecards": notecards})
+}
