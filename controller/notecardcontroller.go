@@ -6,6 +6,7 @@ import (
   "github.com/gin-gonic/gin"
   "sync"
   "fmt"
+  "unicode/utf8"
 )
 
 func insertNotecards(wg *sync.WaitGroup, rawNotecards [][]string, notecardSetID uint, context *gin.Context, errorChan chan string) {
@@ -38,6 +39,16 @@ func insertUserNotecards(wg *sync.WaitGroup, notecardSetID uint, userID uint, co
   }
 }
 
+// Check that each notecard has at least one non-empty field
+func hasAtLeastOneValue(array [][]string) bool {
+  for _, notecard := range array {
+    if notecard[0] == "" && notecard[1] == "" {
+      return false
+    }
+  }
+  return true
+}
+
 // Accepts a Title and an array of Notecards (with a front and back) to create a Set of Notecards
 func CreateNotecardSet(context *gin.Context) {
   userID := context.MustGet("user_id").(uint)
@@ -49,6 +60,15 @@ func CreateNotecardSet(context *gin.Context) {
 
   var newNotecardSet NewNotecardSet
   if err := context.ShouldBindJSON(&newNotecardSet); err != nil {
+    context.JSON(http.StatusBadRequest, gin.H{"error": "Notecards or Notecard Title not formatted correctly"})
+    context.Abort()
+    return
+  }
+
+  lengthTitle := utf8.RuneCountInString(newNotecardSet.Title)
+  noEmptyNotecards := hasAtLeastOneValue(newNotecardSet.Notecards)
+
+  if !noEmptyNotecards || !lengthTitle {
     context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
     context.Abort()
     return
