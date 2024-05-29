@@ -60,7 +60,7 @@ func CreateNotecardSet(context *gin.Context) {
 
   var newNotecardSet NewNotecardSet
   if err := context.ShouldBindJSON(&newNotecardSet); err != nil {
-    context.JSON(http.StatusBadRequest, gin.H{"error": "Notecards or Notecard Title not formatted correctly"})
+    context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
     context.Abort()
     return
   }
@@ -68,8 +68,8 @@ func CreateNotecardSet(context *gin.Context) {
   lengthTitle := utf8.RuneCountInString(newNotecardSet.Title)
   noEmptyNotecards := hasAtLeastOneValue(newNotecardSet.Notecards)
 
-  if !noEmptyNotecards || !lengthTitle {
-    context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+  if !noEmptyNotecards || lengthTitle == 0 {
+    context.JSON(http.StatusBadRequest, gin.H{"error": "Notecards or Notecard Title not formatted correctly"})
     context.Abort()
     return
   }
