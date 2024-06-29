@@ -39,6 +39,30 @@ func insertUserNotecards(wg *sync.WaitGroup, notecardSetID uint, userID uint, co
   }
 }
 
+func deleteNotecardSet(wg *sync.WaitGroup, notecardSetID string, errorChan chan string) {
+  defer wg.Done()
+  deleteNotecardSet := database.Instance.Delete(&model.NotecardSet{}, notecardSetID)
+  if deleteNotecardSet.Error != nil {
+    errorChan <- deleteNotecardSet.Error.Error()
+  }
+}
+
+func deleteNotecards(wg *sync.WaitGroup, notecardSetID string, errorChan chan string) {
+  defer wg.Done()
+  deleteNotecards := database.Instance.Where("notecard_set_id = ?", notecardSetID).Delete(&model.Notecards{})
+  if deleteNotecards.Error != nil {
+    errorChan <- deleteNotecards.Error.Error()
+  }
+}
+
+func deleteUserNotecardSet(wg *sync.WaitGroup, notecardSetID string, errorChan chan string) {
+  defer wg.Done()
+  deleteUserNotecard := database.Instance.Where("notecard_set_id = ?", notecardSetID).Delete(&model.UserNotecards{})
+  if deleteUserNotecard.Error != nil {
+    errorChan <- deleteUserNotecard.Error.Error()
+  }
+}
+
 // Check that each notecard has at least one non-empty field
 func hasAtLeastOneValue(array [][]string) bool {
   for _, notecard := range array {
@@ -134,4 +158,32 @@ func GetNotecards(context *gin.Context) {
     return
   }
   context.JSON(http.StatusOK, gin.H{"notecards": notecards})
+}
+
+// Delete an entire NotecardSet including the Notecards that belong to it as well
+// as the relation to the User that created it
+func DeleteNotecardSet(context *gin.Context) {
+  notecardSetID := context.Param("id")
+
+  wg := new(sync.WaitGroup)
+  wg.Add(3)
+  errorChan := make(chan string)
+
+  go deleteNotecardSet(wg, notecardSetID, errorChan)
+  go deleteNotecards(wg, notecardSetID, errorChan)
+  go deleteUserNotecardSet(wg, notecardSetID, errorChan)
+  
+  wg.Wait()
+  close(errorChan)
+
+  success := true
+  for err := range errorChan {
+    success = false
+    fmt.Println("Error in DeleteNotecardSet:", err)
+  }
+  if success {
+    context.JSON(http.StatusOK, gin.H{"success": true})
+  } else {
+    context.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting Notecard Set"})
+  }
 }

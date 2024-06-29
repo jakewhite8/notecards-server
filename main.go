@@ -26,6 +26,7 @@ func initRouter() *gin.Engine {
       secured.POST("/create_notecard_set", controller.CreateNotecardSet)
       secured.GET("/get_notecard_sets", controller.GetNotecardSets)
       secured.GET("/get_notecards/:id", controller.GetNotecards)
+      secured.DELETE("/delete_notecard_set/:id", controller.DeleteNotecardSet)
 
     }
   }
